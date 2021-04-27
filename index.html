@@ -1,39 +1,387 @@
-<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title>repl.it</title>
-    <link href="style.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/addons/p5.sound.min.js"></script>
+    <script defer src="https://unpkg.com/p5"></script>
+    <script defer src="https://unpkg.com/p5.collide2d"></script>
+    <style>
+      body{ 
+        width:100%;
+        height: 100%;
+        margin: 0px;
+        border: 0;
+        overflow: hidden;
+        display:block;
+      }
+    </style>
   </head>
   <body>
     <script>
       var w = window.innerWidth;
       var h = window.innerHeight;
+      var player;
 
-      //create a variable for the sound file
-      var boing;
+      //flying projectiles that kill you
+      var projectile1;
+      var projectile2;
+      var projectile3;
+      var projectile4;
+      var projectile5;
+      var projectile6;
+      var projectile7;
+      var projectile8;
+      var projectile9;
+      var projectile10;
 
-      function preload() {
-        soundFormats('mp3','ogg');
-        boing = loadSound("boing.mp3");
-      }
+      //hitbox for projectiles
+      var hit1 = false;
+      var hit2 = false;
+      var hit3 = false;
+      var hit4 = false;
+      var hit5 = false;
+      var hit6 = false;
+      var hit7 = false;
+      var hit8 = false;
+      var hit9 = false;
+      var hit10 = false;
 
-      function setUp() {
+      //coin
+      var coin;
+      var score = [0];
+      var hitcoin = false;
+      
+
+      function setup() {
         createCanvas(w,h);
+        coin = new coin();
+        player = new player();
+        projectile1 = new projectile1();
+        projectile2 = new projectile2();
+        projectile3 = new projectile3();
+        projectile4 = new projectile4();
+        projectile5 = new projectile5();
+        projectile6 = new projectile6();
+        projectile7 = new projectile7();
+        projectile8 = new projectile8();
+        projectile9 = new projectile9();
+        projectile10 = new projectile10();
       }
 
       function draw() {
-        //image(variablename,x,y,width,height)
-        //image(fireball,w/2,h/2,100,100)
-        //when I press the spacebar
-          if (keyIsDown(32)) {
-            //play sound attached to boing variable
-            boing.play();
-          }
+        clear();
+        //show coin and player
+        player.show();
+        player.update();
+        coin.show();
+
+        //show projectiles
+        projectile1.show();
+        projectile1.update();
+
+        projectile2.show();
+        projectile2.update();
+
+        projectile3.show();
+        projectile3.update();
+
+        projectile4.show();
+        projectile4.update();
+
+        projectile5.show();
+        projectile5.update();
+
+        projectile6.show();
+        projectile6.update();
+
+        projectile7.show();
+        projectile7.update();
+
+        projectile8.show();
+        projectile8.update();
+
+        projectile9.show();
+        projectile9.update();
+
+        projectile10.show();
+        projectile10.update();
+
+
+        //collision with coin
+        hitcoin = collideRectRect(coin.x,coin.y,50,50,player.x,player.y,50,50);
+
+        //collision with projectiles
+        hit1 = collideRectRect(projectile1.x,projectile1.y,projectile1.l,projectile1.h,player.x,player.y,25,25);
+        hit2 = collideRectRect(projectile2.x,projectile2.y,projectile2.l,projectile2.h,player.x,player.y,25,25);
+        hit3 = collideRectRect(projectile3.x,projectile3.y,projectile3.l,projectile3.h,player.x,player.y,25,25);
+        hit4 = collideRectRect(projectile4.x,projectile4.y,projectile4.l,projectile4.h,player.x,player.y,25,25);
+        hit5 = collideRectRect(projectile5.x,projectile5.y,projectile5.l,projectile5.h,player.x,player.y,25,25);
+        hit6 = collideRectRect(projectile6.x,projectile6.y,projectile6.l,projectile6.h,player.x,player.y,25,25);
+        hit7 = collideRectRect(projectile6.x,projectile6.y,projectile6.l,projectile6.h,player.x,player.y,25,25);
+        hit8 = collideRectRect(projectile6.x,projectile6.y,projectile6.l,projectile6.h,player.x,player.y,25,25);
+        hit9 = collideRectRect(projectile6.x,projectile6.y,projectile6.l,projectile6.h,player.x,player.y,25,25);
+        hit10 = collideRectRect(projectile6.x,projectile6.y,projectile6.l,projectile6.h,player.x,player.y,25,25);
+
+        //coin collect
+        if (hitcoin === true) {
+          score++;
+          coin.x = random(50,w-50);
+          coin.y = random(50,h-50);
+        }
+
+        //win con
+        if (score === 20) {
+          window.alert("You Win");
+          noLoop()
+        }
+
+        //death con
+        if (hit1 == true || hit2 == true || hit3 == true || hit4 == true || hit5 == true || hit6 == true || hit7 == true || hit8 == true || hit9 == true || hit10 == true) {
+          window.alert("You suck (and died)");
+          noLoop();
+        }
+
+        //show coin collection
+        document.getElementById("total").innerHTML = score;
+
       }
+
+      function player() {
+        this.x = w/2;
+        this.y = h/2;
+
+        this.show = function() {
+          //change later
+          fill(color('black'));
+          rect(this.x,this.y,25,25)
+        }
+
+        this.update = function() {
+          if (keyIsDown(65) && this.x > 25) {
+          this.x = this.x -= 10;
+          }
+        if (keyIsDown(68) && this.x < w-25) {
+          this.x = this.x += 10;
+          }
+        if (keyIsDown(87) && this.y > 25) {
+          this.y = this.y -= 10;
+          }
+        if (keyIsDown(83) && this.y < h-25) {
+          this.y = this.y += 10;
+          }
+        }
+      }
+  
+
+     function coin() {
+        this.x = random(50,w-50);
+        this.y = random(50,h-50);
+        //show
+        this.show = function() {
+          fill(color('gold'));
+          rect(this.x,this.y,50,50)
+        }
+      }
+
+      //projectiles
+      function projectile1() {
+        this.h = 25;
+        this.l = 50;
+        this.x = 0;
+        this.y = random(0, h-this.h);
+
+        this.show = function() {
+          fill(color('red'));
+          rect(this.x,this.y,this.l,this.h)
+        }
+        this.update = function() {
+          //change later so increases speed from score?
+          this.x = this.x + 10
+          if (this.x > w) {
+            this.x = 0;
+            this.y = random(0, h-this.h);
+          }
+        }
+      }
+
+      function projectile2() {
+        this.h = 25;
+        this.l = 50;
+        this.x = 0;
+        this.y = random(0, h-this.h);
+
+        this.show = function() {
+          fill(color('red'));
+          rect(this.x,this.y,this.l,this.h)
+        }
+        this.update = function() {
+          //change later so increases speed from score
+          this.x = this.x + 11
+          if (this.x > w) {
+            this.x = 0;
+            this.y = random(0, h-this.h);
+          }
+        }
+      }
+
+      function projectile3() {
+        this.h = 25;
+        this.l = 50;
+        this.x = 0;
+        this.y = random(0, h-this.h);
+
+        this.show = function() {
+          fill(color('red'));
+          rect(this.x,this.y,this.l,this.h)
+        }
+        this.update = function() {
+          //change later so increases speed from score
+          this.x = this.x + 12
+          if (this.x > w) {
+            this.x = 0;
+            this.y = random(0, h-this.h);
+          }
+        }
+      }
+
+      function projectile4() {
+        this.h = 25;
+        this.l = 50;
+        this.x = 0;
+        this.y = random(0, h-this.h);
+
+        this.show = function() {
+          fill(color('red'));
+          rect(this.x,this.y,this.l,this.h)
+        }
+        this.update = function() {
+          //change later so increases speed from score
+          this.x = this.x + 13
+          if (this.x > w) {
+            this.x = 0;
+            this.y = random(0, h-this.h);
+          }
+        }
+      }
+
+      function projectile5() {
+        this.h = 25;
+        this.l = 50;
+        this.x = 0;
+        this.y = random(0, h-this.h);
+
+        this.show = function() {
+          fill(color('red'));
+          rect(this.x,this.y,this.l,this.h)
+        }
+        this.update = function() {
+          //change later so increases speed from score
+          this.x = this.x + 14
+          if (this.x > w) {
+            this.x = 0;
+            this.y = random(0, h-this.h);
+          }
+        }
+      }
+
+      function projectile6() {
+        this.h = 50;
+        this.l = 25;
+        this.x = random(0, w-this.l);
+        this.y = 0;
+
+        this.show = function() {
+          fill(color('red'));
+          rect(this.x,this.y,this.l,this.h)
+        }
+        this.update = function() {
+          //change later so increases speed from score
+          this.y = this.y + 10
+          if (this.y > h) {
+            this.x = random(0, w-this.l);
+            this.y = 0;
+          }
+        }
+      }
+
+      function projectile7() {
+        this.h = 50;
+        this.l = 25;
+        this.x = random(0, w-this.l);
+        this.y = 0;
+
+        this.show = function() {
+          fill(color('red'));
+          rect(this.x,this.y,this.l,this.h)
+        }
+        this.update = function() {
+          //change later so increases speed from score
+          this.y = this.y + 11
+          if (this.y > h) {
+            this.x = random(0, w-this.l);
+            this.y = 0;
+          }
+        }
+      }
+
+      function projectile8() {
+        this.h = 50;
+        this.l = 25;
+        this.x = random(0, w-this.l);
+        this.y = 0;
+
+        this.show = function() {
+          fill(color('red'));
+          rect(this.x,this.y,this.l,this.h)
+        }
+        this.update = function() {
+          //change later so increases speed from score
+          this.y = this.y + 12
+          if (this.y > h) {
+            this.x = random(0, w-this.l);
+            this.y = 0;
+          }
+        }
+      }
+
+      function projectile9() {
+        this.h = 50;
+        this.l = 25;
+        this.x = random(0, w-this.l);
+        this.y = 0;
+
+        this.show = function() {
+          fill(color('red'));
+          rect(this.x,this.y,this.l,this.h)
+        }
+        this.update = function() {
+          //change later so increases speed from score
+          this.y = this.y + 13
+          if (this.y > h) {
+            this.x = random(0, w-this.l);
+            this.y = 0;
+          }
+        }
+      }
+
+      function projectile10() {
+        this.h = 50;
+        this.l = 25;
+        this.x = random(0, w-this.l);
+        this.y = 0;
+
+        this.show = function() {
+          fill(color('red'));
+          rect(this.x,this.y,this.l,this.h)
+        }
+        this.update = function() {
+          //change later so increases speed from score
+          this.y = this.y + 14
+          if (this.y > h) {
+            this.x = random(0, w-this.l);
+            this.y = 0;
+          }
+        }
+      }
+  
     </script>
+    <h1 id="total" style="margin:0";></h1>
   </body>
 </html>
